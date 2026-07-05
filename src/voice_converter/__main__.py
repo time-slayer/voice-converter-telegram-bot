@@ -1,9 +1,9 @@
 import logging
 
-from telegram.ext import ApplicationBuilder, CommandHandler
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 
 from .config import BOT_TOKEN
-from .handlers import hello
+from .handlers import hello, handle_media
 
 import subprocess
 import tempfile
@@ -43,6 +43,9 @@ def main() -> None:
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("hello", hello))
+    app.add_handler(
+        MessageHandler(filters.AUDIO | filters.VIDEO | filters.VOICE, handle_media)
+    )
 
     app.run_polling()
 
