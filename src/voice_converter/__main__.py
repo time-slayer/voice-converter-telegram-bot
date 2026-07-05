@@ -1,13 +1,19 @@
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+import logging
+
+from telegram.ext import ApplicationBuilder, CommandHandler
 
 from .config import BOT_TOKEN
+from .handlers import hello
 
 import subprocess
 import tempfile
 import os
 
-MAX_FILE_SIZE = 20 * 1024 * 1024  # 20 MB
+
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 def opus_encode(file_bytes: bytes, voice_filter: str | None) -> bytes:
@@ -33,11 +39,7 @@ def opus_encode(file_bytes: bytes, voice_filter: str | None) -> bytes:
     return opus_bytes
 
 
-async def hello(update: Update, contex: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text(f"Hello {update.effective_user.first_name}")
-
-
-def main():
+def main() -> None:
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("hello", hello))
