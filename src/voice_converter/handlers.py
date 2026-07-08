@@ -7,8 +7,19 @@ from telegram.ext import ContextTypes
 from telegram.constants import ChatAction
 
 
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user_name = update.effective_user.first_name
+    start_message = (
+        f"Hi, {user_name}\n"
+        "I can convert media into a voice message\n"
+        "You can send me one or more media files at once"
+    )
+    await update.message.reply_text(start_message)
 
-async def convert_media_to_voice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+
+async def convert_media_to_voice(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> None:
     await update.message.reply_chat_action(ChatAction.UPLOAD_VOICE)
 
     message = update.message

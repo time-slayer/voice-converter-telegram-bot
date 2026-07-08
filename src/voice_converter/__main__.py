@@ -1,9 +1,9 @@
 import logging
 
-from telegram.ext import ApplicationBuilder, MessageHandler, filters
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 
 from .config import BOT_TOKEN
-from .handlers import convert_media_to_voice
+from .handlers import start, convert_media_to_voice
 
 
 logging.basicConfig(
@@ -15,11 +15,10 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 def main() -> None:
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    app.add_handler(
-        MessageHandler(
-            filters.AUDIO | filters.VIDEO | filters.VOICE, convert_media_to_voice
-        )
-    )
+    app.add_handler(CommandHandler("start", start))
+
+    media_filter = filters.AUDIO | filters.VIDEO | filters.VOICE
+    app.add_handler(MessageHandler(media_filter, convert_media_to_voice))
 
     app.run_polling()
 
