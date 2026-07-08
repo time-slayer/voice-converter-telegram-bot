@@ -1,13 +1,9 @@
 import logging
 
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
+from telegram.ext import ApplicationBuilder, MessageHandler, filters
 
 from .config import BOT_TOKEN
-from .handlers import hello, handle_media
-
-import subprocess
-import tempfile
-import os
+from .handlers import convert_media_to_voice
 
 
 logging.basicConfig(
@@ -16,35 +12,13 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
-def opus_encode(file_bytes: bytes, voice_filter: str | None) -> bytes:
-    with tempfile.NamedTemporaryFile(delete=False) as fp:
-        fp.write(file_bytes)
-        input_file = fp.name
-
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as fp:
-        output_file = fp.name
-
-    command = ["ffmpeg", "-i", input_file, "-vn"]
-    if voice_filter:
-        command.extend(["-filter:a", voice_filter])
-    command.extend(["-codec:a", "libopus", output_file, "-y"])
-    subprocess.run(command)
-
-    with open(output_file, "rb") as f:
-        opus_bytes = f.read()
-
-    os.unlink(input_file)
-    os.unlink(output_file)
-
-    return opus_bytes
-
-
 def main() -> None:
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    app.add_handler(CommandHandler("hello", hello))
     app.add_handler(
-        MessageHandler(filters.AUDIO | filters.VIDEO | filters.VOICE, handle_media)
+        MessageHandler(
+            filters.AUDIO | filters.VIDEO | filters.VOICE, convert_media_to_voice
+        )
     )
 
     app.run_polling()
