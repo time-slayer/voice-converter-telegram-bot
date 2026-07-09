@@ -1,0 +1,13 @@
+.venv/
+.vscode/
+.git
+.gitignore
+.dockerignore
+.env
+
+__pycache__/
+build/
+*.egg-info/
+Dockerfile
+README.md
+LICENSE.md
