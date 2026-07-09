@@ -2,6 +2,6 @@
 .venv
 .vscode
 
-*.egg-info
-build
-__pycache__
+__pycache__/
+build/
+*.egg-info/
