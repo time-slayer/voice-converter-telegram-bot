@@ -20,7 +20,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def convert_media_to_voice(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> None:
-    await update.message.reply_chat_action(ChatAction.UPLOAD_VOICE)
+    await update.message.reply_chat_action(ChatAction.RECORD_VOICE)
 
     message = update.message
     media = message.audio or message.video or message.voice
