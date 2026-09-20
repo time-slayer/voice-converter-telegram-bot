@@ -1,14 +1,17 @@
-FROM python:3.14-slim
+FROM astral/uv:python3.14-trixie-slim
+
+RUN apt-get update \
+    && apt-get install -y ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-RUN apt update && \
-    apt install -y ffmpeg 
+RUN --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project
 
-COPY pyproject.toml .
+COPY . .
 
-COPY src/ ./src/
+RUN uv sync --locked
 
-RUN pip install .
-
-CMD ["python", "-m", "voice_converter"]
+CMD ["uv", "run", "voice-converter"]
