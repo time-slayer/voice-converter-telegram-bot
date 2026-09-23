@@ -4,6 +4,7 @@
 .gitignore
 .dockerignore
 .env
+.secrets
 
 __pycache__/
 build/
