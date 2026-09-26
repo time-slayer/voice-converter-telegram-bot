@@ -57,8 +57,6 @@ async def convert_media_to_voice(
 
         if process.returncode == 0:
             with open(output_path, "rb") as f:
-                await update.message.reply_voice(
-                    voice=f, reply_to_message_id=message.id
-                )
+                await update.message.reply_voice(voice=f, do_quote=True)
         else:
-            await update.message.reply_text("Failed to convert")
+            await update.message.reply_text("Failed to convert", do_quote=True)
