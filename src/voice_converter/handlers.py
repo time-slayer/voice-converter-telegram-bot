@@ -3,7 +3,7 @@ import os
 import tempfile
 
 from telegram import Update
-from telegram.constants import ChatAction
+from telegram.constants import ChatAction, FileSizeLimit
 from telegram.ext import ContextTypes
 
 
@@ -25,6 +25,13 @@ async def convert_media_to_voice(
     message = update.message
     media = message.audio or message.video or message.voice
     if not media:
+        return
+
+    if media.file_size and media.file_size > FileSizeLimit.FILESIZE_DOWNLOAD:
+        await message.reply_text(
+            f"Media file is too large to download. Current limit is 20 MB",
+            do_quote=True,
+        )
         return
 
     telegram_file = await media.get_file()
