@@ -1,10 +1,10 @@
 import asyncio
-import tempfile
 import os
+import tempfile
 
 from telegram import Update
+from telegram.constants import ChatAction, FileSizeLimit
 from telegram.ext import ContextTypes
-from telegram.constants import ChatAction
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -25,6 +25,13 @@ async def convert_media_to_voice(
     message = update.message
     media = message.audio or message.video or message.voice
     if not media:
+        return
+
+    if media.file_size and media.file_size > FileSizeLimit.FILESIZE_DOWNLOAD:
+        await message.reply_text(
+            f"Media file is too large to download. Current limit is 20 MB",
+            do_quote=True,
+        )
         return
 
     telegram_file = await media.get_file()
@@ -50,8 +57,6 @@ async def convert_media_to_voice(
 
         if process.returncode == 0:
             with open(output_path, "rb") as f:
-                await update.message.reply_voice(
-                    voice=f, reply_to_message_id=message.id
-                )
+                await update.message.reply_voice(voice=f, do_quote=True)
         else:
-            await update.message.reply_text("Failed to convert")
+            await update.message.reply_text("Failed to convert", do_quote=True)

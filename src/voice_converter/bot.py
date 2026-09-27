@@ -3,8 +3,7 @@ import logging
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 
 from .config import BOT_TOKEN
-from .handlers import start, convert_media_to_voice
-
+from .handlers import convert_media_to_voice, start
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -21,7 +20,3 @@ def main() -> None:
     app.add_handler(MessageHandler(media_filter, convert_media_to_voice))
 
     app.run_polling()
-
-
-# if __name__ == "__main__":
-#     main()

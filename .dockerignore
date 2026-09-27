@@ -1,9 +1,11 @@
+.github/
 .venv/
 .vscode/
 .git
 .gitignore
 .dockerignore
 .env
+.secrets
 
 __pycache__/
 build/
