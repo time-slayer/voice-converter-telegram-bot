@@ -15,4 +15,6 @@ COPY src/ src/
 
 RUN uv sync --locked
 
-CMD ["uv", "run", "voice-converter"]
+ENV PATH="/app/.venv/bin:$PATH"
+
+CMD ["voice-converter"]
