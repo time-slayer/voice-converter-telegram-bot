@@ -46,8 +46,7 @@ jobs:
           script: |
             cd /opt/${{ env.CONTAINER_NAME }}
             docker pull ${{ env.IMAGE_NAME }}
-            docker stop ${{ env.CONTAINER_NAME }} || true
-            docker rm ${{ env.CONTAINER_NAME }} || true
+            docker rm -f ${{ env.CONTAINER_NAME }} || true
             docker run -d \
               --name ${{ env.CONTAINER_NAME }} \
               --restart unless-stopped \
